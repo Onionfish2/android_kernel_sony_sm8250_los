@@ -1281,6 +1281,7 @@ int subsystem_restart_dev(struct subsys_device *dev)
 	}
 
 	__subsystem_restart_dev(dev);
+	
 	module_put(dev->owner);
 	put_device(&dev->dev);
 
