@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-/* Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.*/
+/* Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.*/
 
 #include <linux/interrupt.h>
 #include <linux/iommu.h>
@@ -30,12 +30,12 @@ enum msi_type {
 };
 
 struct msm_msi_irq {
-        struct msm_msi_client *client;
+	struct msm_msi_client *client;
 	struct msm_msi_grp *grp; /* group the irq belongs to */
 	u32 grp_index; /* index in the group */
 	unsigned int hwirq; /* MSI controller hwirq */
 	unsigned int virq; /* MSI controller virq */
-        u32 pos; /* position in MSI bitmap */
+	u32 pos; /* position in MSI bitmap */
 };
 
 struct msm_msi_grp {
@@ -61,7 +61,7 @@ struct msm_msi {
 	struct irq_domain *inner_domain; /* parent domain; gen irq related */
 	struct irq_domain *msi_domain; /* child domain; pci related */
 	phys_addr_t msi_addr;
-        u32 msi_addr_size;
+	u32 msi_addr_size;
 	enum msi_type type;
 	spinlock_t cfg_lock; /* lock for configuring Synopsys MSI registers */
 	bool cfg_access; /* control access to MSI registers */
@@ -199,7 +199,7 @@ static void msm_msi_qgic_unmask_irq(struct irq_data *data)
 static void msm_msi_unmask_irq(struct irq_data *data)
 {
 	struct irq_data *parent_data;
-        struct msm_msi_irq *msi_irq;
+	struct msm_msi_irq *msi_irq;
 	struct msm_msi *msi;
 	unsigned long flags;
 
@@ -331,9 +331,9 @@ static void msm_msi_irq_compose_msi_msg(struct irq_data *data,
 {
 	struct msm_msi_irq *msi_irq = irq_data_get_irq_chip_data(data);
 	struct irq_data *parent_data = irq_get_irq_data(irqd_to_hwirq(data));
-        struct msm_msi_client *client = msi_irq->client;
+	struct msm_msi_client *client = msi_irq->client;
 	struct msm_msi *msi = client->msi;
-	
+
 	if (!parent_data)
 		return;
 
@@ -414,12 +414,12 @@ static void msm_msi_irq_domain_free(struct irq_domain *domain,
 	if (!data)
 		return;
 
-	si_irq = irq_data_get_irq_chip_data(data);
+	msi_irq = irq_data_get_irq_chip_data(data);
 	client  = msi_irq->client;
 	msi = client->msi;
 
 	mutex_lock(&msi->mutex);
-	
+
 	bitmap_clear(msi->bitmap, msi_irq->pos, nr_irqs);
 	client->nr_irqs -= nr_irqs;
 
@@ -609,7 +609,7 @@ int msm_msi_init(struct device *dev)
 	u32 size_exp = 0;
 	struct resource *res;
 	int (*msi_irq_setup)(struct msm_msi *msi);
- 
+
 	if (!dev->of_node) {
 		dev_err(dev, "MSI: missing DT node\n");
 		return -EINVAL;
